@@ -11,16 +11,22 @@ def home():
     price = latest_alert.get("price", "-")
     time = latest_alert.get("time", "-")
     signal = latest_alert.get("signal", "-")
+    timeframe = latest_alert.get("timeframe", "-")
+    exchange = latest_alert.get("exchange", "-")
+    volume = latest_alert.get("volume", "-")
 
     return f"""
     <html>
     <body>
         <h2>TSX AI Webhook is running ✅</h2>
-        <h3>Latest Alert</h3>
+        <h3>Latest Alert</h3>exchange
         <p><b>Symbol:</b> {symbol}</p>
         <p><b>Price:</b> {price}</p>
         <p><b>Time:</b> {time}</p>
         <p><b>Signal:</b> {signal}</p>
+        <p><b>Signal:</b> {timeframe}</p>
+        <p><b>Signal:</b> {exchange}</p>
+        <p><b>Signal:</b> {volume}</p>
     </body>
     </html>
     """
