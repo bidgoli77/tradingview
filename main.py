@@ -16,8 +16,11 @@ def home():
         rows += f"""
         <tr>
             <td>{alert.get("received_at", "-")}</td>
+            <td>{alert.get("exchange", "-")}</td>
             <td>{alert.get("symbol", "-")}</td>
+            <td>{alert.get("timeframe", "-")}</td>
             <td>{alert.get("price", "-")}</td>
+            <td>{alert.get("volume", "-")}</td>
             <td>{alert.get("time", "-")}</td>
             <td>{alert.get("signal", "-")}</td>
         </tr>
@@ -29,17 +32,24 @@ def home():
         <h2>TSX AI Webhook is running ✅</h2>
 
         <h3>Latest Alert</h3>
+        <p><b>Exchange:</b> {latest_alert.get("exchange", "-")}</p>
         <p><b>Symbol:</b> {latest_alert.get("symbol", "-")}</p>
+        <p><b>Timeframe:</b> {latest_alert.get("timeframe", "-")}</p>
         <p><b>Price:</b> {latest_alert.get("price", "-")}</p>
-        <p><b>Time:</b> {latest_alert.get("time", "-")}</p>
+        <p><b>Volume:</b> {latest_alert.get("volume", "-")}</p>
+        <p><b>TradingView Time:</b> {latest_alert.get("time", "-")}</p>
         <p><b>Signal:</b> {latest_alert.get("signal", "-")}</p>
+        <p><b>Received At:</b> {latest_alert.get("received_at", "-")}</p>
 
         <h3>Last 20 Alerts</h3>
         <table border="1" cellpadding="8">
             <tr>
                 <th>Received At</th>
+                <th>Exchange</th>
                 <th>Symbol</th>
+                <th>Timeframe</th>
                 <th>Price</th>
+                <th>Volume</th>
                 <th>TradingView Time</th>
                 <th>Signal</th>
             </tr>
@@ -66,17 +76,27 @@ async def tradingview_webhook(request: Request):
 
     try:
         data = await request.json()
-        data["received_at"] = datetime.utcnow().isoformat() + "Z"
 
-        latest_alert = data
-        alert_history.append(data)
+        normalized_data = {
+            "symbol": data.get("symbol", "-"),
+            "price": data.get("price", "-"),
+            "time": data.get("time", "-"),
+            "signal": data.get("signal", "-"),
+            "timeframe": data.get("timeframe", "-"),
+            "exchange": data.get("exchange", "-"),
+            "volume": data.get("volume", "-"),
+            "received_at": datetime.utcnow().isoformat() + "Z"
+        }
+
+        latest_alert = normalized_data
+        alert_history.append(normalized_data)
         alert_history = alert_history[-20:]
 
-        print("Webhook received:", data)
+        print("Webhook received:", normalized_data)
 
         return {
             "status": "received",
-            "data": data
+            "data": normalized_data
         }
 
     except Exception as e:
