@@ -1,11 +1,29 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 
 app = FastAPI()
 
-@app.get("/")
+latest_alert = {}
+
+@app.get("/", response_class=HTMLResponse)
 def home():
-    return {"status": "TSX AI Webhook is running"}
+    symbol = latest_alert.get("symbol", "-")
+    price = latest_alert.get("price", "-")
+    time = latest_alert.get("time", "-")
+    signal = latest_alert.get("signal", "-")
+
+    return f"""
+    <html>
+    <body>
+        <h2>TSX AI Webhook is running ✅</h2>
+        <h3>Latest Alert</h3>
+        <p><b>Symbol:</b> {symbol}</p>
+        <p><b>Price:</b> {price}</p>
+        <p><b>Time:</b> {time}</p>
+        <p><b>Signal:</b> {signal}</p>
+    </body>
+    </html>
+    """
 
 @app.get("/webhook")
 def webhook_status():
@@ -16,15 +34,15 @@ def webhook_status():
 
 @app.post("/webhook")
 async def tradingview_webhook(request: Request):
+    global latest_alert
+
     body = await request.body()
 
     try:
         data = await request.json()
+        latest_alert = data
         print("Webhook received:", data)
-        return {
-            "status": "received",
-            "data": data
-        }
+        return {"status": "received", "data": data}
 
     except Exception as e:
         raw_text = body.decode("utf-8", errors="ignore")
