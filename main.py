@@ -24,9 +24,9 @@ def home():
         <p><b>Price:</b> {price}</p>
         <p><b>Time:</b> {time}</p>
         <p><b>Signal:</b> {signal}</p>
-        <p><b>Signal:</b> {timeframe}</p>
-        <p><b>Signal:</b> {exchange}</p>
-        <p><b>Signal:</b> {volume}</p>
+        <p><b>timeframe:</b> {timeframe}</p>
+        <p><b>exchange:</b> {exchange}</p>
+        <p><b>volume:</b> {volume}</p>
     </body>
     </html>
     """
