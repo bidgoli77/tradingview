@@ -1,37 +1,40 @@
-# Mehdi Trading Bot v3.1 Professional Dashboard
+# Mehdi Trading Bot v3.2 — AI Signal Engine
 
-Deploy-ready FastAPI TradingView webhook engine.
+Production-ready FastAPI core for TradingView webhooks with dashboard, SQLite storage, symbol whitelist, duplicate protection, risk management, scoring, and an AI signal analysis layer.
 
-## Features
-- TradingView `/webhook`
-- SQLite signal storage
-- Duplicate protection
-- 20-symbol whitelist for TradingView Essential
-- Risk manager
-- Scoring engine
-- Portfolio / symbol status engine
-- Professional HTML dashboard at `/dashboard`
-- Signal management API
+## Main endpoints
 
-## Render
-Start command:
+- `/health`
+- `/dashboard`
+- `/webhook` POST
+- `/test-webhook` GET
+- `/signals`
+- `/signals/latest`
+- `/portfolio`
+- `/analysis/latest`
+- `/analysis/{signal_id}`
+
+## Render Start Command
 
 ```bash
 uvicorn main:app --host 0.0.0.0 --port $PORT
 ```
 
-## Test URLs
-- `/health`
-- `/symbols`
-- `/test-webhook`
-- `/logs`
-- `/dashboard`
-- `/portfolio`
-- `/symbol-status`
-- `/signals`
-- `/signals/latest`
+## AI Mode
 
-## TradingView Alert Message
+By default, AI analysis uses a deterministic local fallback and does not call Gemini.
+To enable Gemini, set these environment variables in Render:
+
+```env
+ENABLE_AI_ANALYSIS=true
+GOOGLE_API_KEY=your_key_here
+GEMINI_MODEL=gemini-1.5-flash
+AI_MIN_SCORE_TO_PASS=60
+```
+
+## TradingView Message
+
+Use this in the Alert message field for strategy order fills:
 
 ```text
 {{strategy.order.alert_message}}
