@@ -1,12 +1,11 @@
 import json
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
-from risk import analyze_risk
-
 
 from symbols import is_allowed_symbol, normalize_symbol
 from utils import save_signal, now_utc
 from ai import analyze_signal
+from risk import analyze_risk
 
 router = APIRouter()
 
@@ -47,31 +46,37 @@ async def tradingview_webhook(request: Request):
         data["symbol"] = normalized_symbol
         data["signal"] = str(data.get("signal")).upper()
 
-        saved = save_signal(data)
+        saved = save_signal(data, status="received")
         ai_result = analyze_signal(saved)
         risk_result = analyze_risk(saved)
 
-        print("✅ NEW SIGNAL SAVED:" if not saved["is_duplicate"] else "⚠️ DUPLICATE SIGNAL IGNORED:")
+        print("✅ NEW SIGNAL SAVED:" if not saved.get("is_duplicate") else "⚠️ DUPLICATE SIGNAL IGNORED:")
         print(json.dumps(saved, indent=2))
 
         return {
             "status": "success",
-            "message": "Duplicate ignored" if saved["is_duplicate"] else "Signal saved",
+            "message": "Duplicate ignored" if saved.get("is_duplicate") else "Signal saved",
             "signal": saved,
             "ai": ai_result,
-             "risk": risk_result,
+            "risk": risk_result,
         }
 
     except json.JSONDecodeError:
         return JSONResponse(
             status_code=400,
-            content={"status": "error", "message": "Invalid JSON"},
+            content={
+                "status": "error",
+                "message": "Invalid JSON",
+            },
         )
 
     except Exception as e:
         return JSONResponse(
             status_code=500,
-            content={"status": "error", "message": str(e)},
+            content={
+                "status": "error",
+                "message": str(e),
+            },
         )
 
 
@@ -80,6 +85,7 @@ def webhook_status():
     return {
         "status": "active",
         "message": "Webhook endpoint is active. Use POST from TradingView.",
+        "required_method": "POST",
     }
 
 
@@ -96,9 +102,16 @@ def test_webhook():
     }
 
     saved = save_signal(test_data, status="test_received")
+    ai_result = analyze_signal(saved)
+    risk_result = analyze_risk(saved)
+
+    print("🧪 TEST SIGNAL SAVED:")
+    print(json.dumps(saved, indent=2))
 
     return {
         "status": "success",
         "message": "Test signal saved",
         "signal": saved,
+        "ai": ai_result,
+        "risk": risk_result,
     }
