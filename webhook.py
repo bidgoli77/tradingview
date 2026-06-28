@@ -1,6 +1,8 @@
 import json
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
+from risk import analyze_risk
+
 
 from symbols import is_allowed_symbol, normalize_symbol
 from utils import save_signal, now_utc
@@ -47,6 +49,7 @@ async def tradingview_webhook(request: Request):
 
         saved = save_signal(data)
         ai_result = analyze_signal(saved)
+        risk_result = analyze_risk(saved)
 
         print("✅ NEW SIGNAL SAVED:" if not saved["is_duplicate"] else "⚠️ DUPLICATE SIGNAL IGNORED:")
         print(json.dumps(saved, indent=2))
@@ -97,4 +100,5 @@ def test_webhook():
         "status": "success",
         "message": "Test signal saved",
         "signal": saved,
+        "risk": risk_result,
     }
