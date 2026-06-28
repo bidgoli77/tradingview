@@ -1,41 +1,44 @@
-# Mehdi Trading Bot v3.0 Core
+# Mehdi Trading Bot v3.1 Professional Dashboard
 
-Deployable FastAPI core for TradingView webhook signals.
+Deploy-ready FastAPI TradingView webhook engine.
 
 ## Features
-- TradingView webhook receiver
-- 20-symbol whitelist for TradingView Essential plan
-- SQLite persistence
-- Duplicate detection
+- TradingView `/webhook`
+- SQLite signal storage
+- Duplicate protection
+- 20-symbol whitelist for TradingView Essential
 - Risk manager
 - Scoring engine
-- Portfolio/symbol status engine
-- Basic HTML dashboard
-- AI, Telegram, Broker, Backtest placeholders for future versions
+- Portfolio / symbol status engine
+- Professional HTML dashboard at `/dashboard`
+- Signal management API
 
-## Local run
+## Render
+Start command:
+
 ```bash
-pip install -r requirements.txt
-uvicorn main:app --reload
+uvicorn main:app --host 0.0.0.0 --port $PORT
 ```
 
-Open:
-- http://localhost:8000/health
-- http://localhost:8000/test-webhook
-- http://localhost:8000/logs
-- http://localhost:8000/dashboard
+## Test URLs
+- `/health`
+- `/symbols`
+- `/test-webhook`
+- `/logs`
+- `/dashboard`
+- `/portfolio`
+- `/symbol-status`
+- `/signals`
+- `/signals/latest`
 
-## TradingView webhook
-URL:
-```text
-https://YOUR-RENDER-APP.onrender.com/webhook
-```
-Message:
+## TradingView Alert Message
+
 ```text
 {{strategy.order.alert_message}}
 ```
 
-## Pine JSON example
-```json
-{"symbol":"{{ticker}}","price":"{{close}}","time":"{{time}}","signal":"BUY","timeframe":"{{interval}}","exchange":"{{exchange}}","volume":"{{volume}}"}
+Webhook URL:
+
+```text
+https://YOUR-RENDER-APP.onrender.com/webhook
 ```

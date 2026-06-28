@@ -4,6 +4,7 @@ from app.config import APP_NAME, APP_VERSION, BASE_DIR
 from app.database import init_db
 from app.webhook import router as webhook_router
 from app.dashboard import router as dashboard_router
+from app.signals_api import router as signals_router
 from app.symbols import get_allowed_symbols
 from app.utils import get_recent_signals, get_stats, now_utc
 from app.engine import build_symbol_status, portfolio_summary
@@ -15,6 +16,7 @@ app = FastAPI(title=APP_NAME, version=APP_VERSION)
 app.mount('/static', StaticFiles(directory=str(BASE_DIR / 'static')), name='static')
 app.include_router(webhook_router)
 app.include_router(dashboard_router)
+app.include_router(signals_router)
 
 @app.get('/')
 def home():
@@ -22,9 +24,9 @@ def home():
         'status': 'online',
         'service': APP_NAME,
         'version': APP_VERSION,
-        'phase': 'v3.0 Core',
+        'phase': 'v3.1 Professional Dashboard',
         'features': ['Webhook', 'SQLite', 'Duplicate Detection', 'Allowed Symbols', 'Risk Manager', 'Scoring Engine', 'Portfolio Engine', 'Dashboard', 'Paper Broker Placeholder', 'AI Placeholder'],
-        'endpoints': ['/health', '/symbols', '/webhook', '/test-webhook', '/logs', '/stats', '/symbol-status', '/portfolio', '/dashboard', '/backtest']
+        'endpoints': ['/health', '/symbols', '/webhook', '/test-webhook', '/logs', '/stats', '/symbol-status', '/portfolio', '/dashboard', '/signals', '/signals/latest', '/backtest']
     }
 
 @app.get('/health')

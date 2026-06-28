@@ -71,3 +71,41 @@ def get_stats():
         sells = conn.execute("SELECT COUNT(*) FROM signals WHERE signal='SELL'").fetchone()[0]
         strong = conn.execute("SELECT COUNT(*) FROM signals WHERE decision='STRONG_WATCH'").fetchone()[0]
     return {'total_signals': total, 'buy_signals': buys, 'sell_signals': sells, 'strong_watch': strong}
+
+
+def get_signal_by_id(signal_id: int):
+    with get_conn() as conn:
+        row = conn.execute('SELECT * FROM signals WHERE id = ?', (signal_id,)).fetchone()
+    return dict(row) if row else None
+
+
+def get_latest_signal(symbol: str | None = None):
+    with get_conn() as conn:
+        if symbol:
+            row = conn.execute('SELECT * FROM signals WHERE symbol = ? ORDER BY id DESC LIMIT 1', (normalize_symbol(symbol),)).fetchone()
+        else:
+            row = conn.execute('SELECT * FROM signals ORDER BY id DESC LIMIT 1').fetchone()
+    return dict(row) if row else None
+
+
+def get_signals_by_symbol(symbol: str, limit: int = 100):
+    with get_conn() as conn:
+        rows = conn.execute(
+            'SELECT * FROM signals WHERE symbol = ? ORDER BY id DESC LIMIT ?',
+            (normalize_symbol(symbol), limit),
+        ).fetchall()
+    return [dict(r) for r in rows]
+
+
+def delete_signal_by_id(signal_id: int) -> bool:
+    with get_conn() as conn:
+        cur = conn.execute('DELETE FROM signals WHERE id = ?', (signal_id,))
+        conn.commit()
+        return cur.rowcount > 0
+
+
+def delete_all_signals() -> int:
+    with get_conn() as conn:
+        cur = conn.execute('DELETE FROM signals')
+        conn.commit()
+        return cur.rowcount

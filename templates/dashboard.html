@@ -3,35 +3,82 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mehdi Trading Bot Dashboard</title>
+  <title>Mehdi Trading Bot v3.1</title>
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
+  <header class="topbar">
+    <div>
+      <h1>Mehdi Trading Bot</h1>
+      <p>v3.1 Professional Dashboard · TradingView Webhook Engine</p>
+    </div>
+    <div class="status online">ONLINE</div>
+  </header>
+
   <main class="container">
-    <h1>Mehdi Trading Bot v3.0 Core</h1>
     <section class="cards">
       <div class="card"><span>Total Signals</span><strong>{{ stats.total_signals }}</strong></div>
       <div class="card"><span>BUY</span><strong>{{ stats.buy_signals }}</strong></div>
       <div class="card"><span>SELL</span><strong>{{ stats.sell_signals }}</strong></div>
       <div class="card"><span>Strong Watch</span><strong>{{ stats.strong_watch }}</strong></div>
-    </section>
-    <section class="cards">
-      <div class="card"><span>Total Symbols</span><strong>{{ portfolio.total_symbols }}</strong></div>
       <div class="card"><span>Active Symbols</span><strong>{{ portfolio.active_symbols }}</strong></div>
       <div class="card"><span>Waiting</span><strong>{{ portfolio.waiting_symbols }}</strong></div>
-      <div class="card"><span>Strong</span><strong>{{ portfolio.strong_watch }}</strong></div>
     </section>
-    <h2>Recent Signals</h2>
-    <table>
-      <thead><tr><th>ID</th><th>Time</th><th>Symbol</th><th>Side</th><th>Price</th><th>TF</th><th>Decision</th><th>Status</th></tr></thead>
-      <tbody>
-      {% for s in signals %}
-        <tr>
-          <td>{{ s.id }}</td><td>{{ s.received_at }}</td><td>{{ s.symbol }}</td><td>{{ s.signal }}</td><td>{{ s.price }}</td><td>{{ s.timeframe }}</td><td>{{ s.decision }}</td><td>{{ s.status }}</td>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
+
+    <section class="panel">
+      <div class="panel-title">
+        <h2>Portfolio / Symbol Status</h2>
+        <a href="/portfolio">JSON</a>
+      </div>
+      <div class="symbol-grid">
+        {% for symbol, row in portfolio.symbols.items() %}
+        <div class="symbol-card {{ 'active' if row.has_signal else 'waiting' }}">
+          <div class="symbol-head">
+            <strong>{{ symbol }}</strong>
+            <span>{{ row.state }}</span>
+          </div>
+          <p>Direction: <b>{{ row.last_direction or '-' }}</b></p>
+          <p>Price: <b>{{ row.last_price or '-' }}</b></p>
+          <p>Signals: <b>{{ row.signals_count }}</b></p>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-title">
+        <h2>Recent Signals</h2>
+        <a href="/signals">API</a>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>Time</th><th>Symbol</th><th>Side</th><th>Price</th><th>TF</th><th>Status</th><th>Decision</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for s in signals %}
+            <tr>
+              <td>{{ s.id }}</td>
+              <td>{{ s.received_at }}</td>
+              <td>{{ s.symbol }}</td>
+              <td><span class="badge {{ s.signal|lower }}">{{ s.signal }}</span></td>
+              <td>{{ s.price }}</td>
+              <td>{{ s.timeframe }}</td>
+              <td>{{ s.status }}</td>
+              <td>{{ s.decision }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel endpoints">
+      <h2>Useful Endpoints</h2>
+      <p><a href="/health">/health</a> · <a href="/symbols">/symbols</a> · <a href="/test-webhook">/test-webhook</a> · <a href="/logs">/logs</a> · <a href="/signals/latest">/signals/latest</a></p>
+    </section>
   </main>
 </body>
 </html>

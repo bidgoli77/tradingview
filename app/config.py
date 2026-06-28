@@ -7,7 +7,7 @@ except Exception:
     pass
 
 APP_NAME = os.getenv('APP_NAME', 'Mehdi Trading Bot')
-APP_VERSION = os.getenv('APP_VERSION', '3.0-core')
+APP_VERSION = os.getenv('APP_VERSION', '3.1-professional-dashboard')
 ENV = os.getenv('ENV', 'production')
 DB_PATH = os.getenv('DB_PATH', 'signals.db')
 BASE_DIR = Path(__file__).resolve().parent.parent
