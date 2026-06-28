@@ -59,6 +59,7 @@ async def tradingview_webhook(request: Request):
             "message": "Duplicate ignored" if saved["is_duplicate"] else "Signal saved",
             "signal": saved,
             "ai": ai_result,
+             "risk": risk_result,
         }
 
     except json.JSONDecodeError:
@@ -100,5 +101,4 @@ def test_webhook():
         "status": "success",
         "message": "Test signal saved",
         "signal": saved,
-        "risk": risk_result,
     }
