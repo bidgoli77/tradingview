@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mehdi Trading Bot Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>Mehdi Trading Bot v3.0 Core</h1>
+    <section class="cards">
+      <div class="card"><span>Total Signals</span><strong>{{ stats.total_signals }}</strong></div>
+      <div class="card"><span>BUY</span><strong>{{ stats.buy_signals }}</strong></div>
+      <div class="card"><span>SELL</span><strong>{{ stats.sell_signals }}</strong></div>
+      <div class="card"><span>Strong Watch</span><strong>{{ stats.strong_watch }}</strong></div>
+    </section>
+    <section class="cards">
+      <div class="card"><span>Total Symbols</span><strong>{{ portfolio.total_symbols }}</strong></div>
+      <div class="card"><span>Active Symbols</span><strong>{{ portfolio.active_symbols }}</strong></div>
+      <div class="card"><span>Waiting</span><strong>{{ portfolio.waiting_symbols }}</strong></div>
+      <div class="card"><span>Strong</span><strong>{{ portfolio.strong_watch }}</strong></div>
+    </section>
+    <h2>Recent Signals</h2>
+    <table>
+      <thead><tr><th>ID</th><th>Time</th><th>Symbol</th><th>Side</th><th>Price</th><th>TF</th><th>Decision</th><th>Status</th></tr></thead>
+      <tbody>
+      {% for s in signals %}
+        <tr>
+          <td>{{ s.id }}</td><td>{{ s.received_at }}</td><td>{{ s.symbol }}</td><td>{{ s.signal }}</td><td>{{ s.price }}</td><td>{{ s.timeframe }}</td><td>{{ s.decision }}</td><td>{{ s.status }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

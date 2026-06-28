@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: mehdi-trading-bot-v3-core
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: ENV
+        value: production
+      - key: ENABLE_AI_ANALYSIS
+        value: false
+      - key: ENABLE_TELEGRAM
+        value: false

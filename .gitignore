@@ -1,6 +1,7 @@
 .env
+signals.db
 __pycache__/
 *.pyc
-signals.db
 .venv/
 venv/
+.DS_Store
