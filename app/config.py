@@ -8,13 +8,15 @@ except Exception:
     pass
 
 APP_NAME = os.getenv('APP_NAME', 'Mehdi Trading Bot')
-APP_VERSION = os.getenv('APP_VERSION', '3.2-ai-signal-engine')
+APP_VERSION = os.getenv('APP_VERSION', '3.3-google-genai-sdk')
 ENV = os.getenv('ENV', 'production')
 DB_PATH = os.getenv('DB_PATH', 'signals.db')
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 ENABLE_AI_ANALYSIS = os.getenv('ENABLE_AI_ANALYSIS', 'false').lower() == 'true'
-GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY', '')
+
+# Supports both names. GOOGLE_API_KEY is preferred by this project.
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY', '') or os.getenv('GEMINI_API_KEY', '')
 GEMINI_MODEL = os.getenv('GEMINI_MODEL', 'gemini-1.5-flash')
 AI_MIN_SCORE_TO_PASS = int(os.getenv('AI_MIN_SCORE_TO_PASS', '60'))
 AI_TIMEOUT_SECONDS = int(os.getenv('AI_TIMEOUT_SECONDS', '20'))

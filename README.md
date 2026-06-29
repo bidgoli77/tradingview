@@ -1,18 +1,14 @@
-# Mehdi Trading Bot v3.2 — AI Signal Engine
+# Mehdi Trading Bot v3.3 — Google GenAI SDK
 
-Production-ready FastAPI core for TradingView webhooks with dashboard, SQLite storage, symbol whitelist, duplicate protection, risk management, scoring, and an AI signal analysis layer.
+This version migrates the AI Signal Engine from the deprecated `google-generativeai` package to the new official `google-genai` SDK.
 
-## Main endpoints
+## Key changes
 
-- `/health`
-- `/dashboard`
-- `/webhook` POST
-- `/test-webhook` GET
-- `/signals`
-- `/signals/latest`
-- `/portfolio`
-- `/analysis/latest`
-- `/analysis/{signal_id}`
+- Uses `from google import genai`
+- Uses `client = genai.Client(api_key=GOOGLE_API_KEY)`
+- Removes deprecated `google-generativeai`
+- Adds `/debug-ai` endpoint for safe AI configuration diagnostics
+- Keeps local deterministic fallback if Gemini fails
 
 ## Render Start Command
 
@@ -20,28 +16,47 @@ Production-ready FastAPI core for TradingView webhooks with dashboard, SQLite st
 uvicorn main:app --host 0.0.0.0 --port $PORT
 ```
 
-## AI Mode
-
-By default, AI analysis uses a deterministic local fallback and does not call Gemini.
-To enable Gemini, set these environment variables in Render:
+## Required Render Environment Variables
 
 ```env
 ENABLE_AI_ANALYSIS=true
-GOOGLE_API_KEY=your_key_here
+GOOGLE_API_KEY=YOUR_GOOGLE_AI_STUDIO_API_KEY
 GEMINI_MODEL=gemini-1.5-flash
 AI_MIN_SCORE_TO_PASS=60
+AI_TIMEOUT_SECONDS=20
 ```
 
-## TradingView Message
+Do not put the real API key in GitHub. Add it only in Render → Environment.
 
-Use this in the Alert message field for strategy order fills:
+## Test endpoints
 
 ```text
-{{strategy.order.alert_message}}
+/health
+/debug-ai
+/test-webhook
+/analysis/latest
+/dashboard
 ```
 
-Webhook URL:
+Expected `/debug-ai` output:
 
-```text
-https://YOUR-RENDER-APP.onrender.com/webhook
+```json
+{
+  "ai_enabled": true,
+  "google_api_key_exists": true,
+  "google_api_key_prefix": "AQ.Ab8RN",
+  "gemini_model": "gemini-1.5-flash",
+  "sdk": "google-genai"
+}
 ```
+
+Expected `/test-webhook` when Gemini succeeds:
+
+```json
+"ai": {
+  "enabled": true,
+  "provider": "google-genai"
+}
+```
+
+If Gemini fails, the app will still return a safe local fallback and include the error string.

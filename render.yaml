@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: mehdi-trading-bot-v3-core
+    name: mehdi-trading-bot-v33-google-genai
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
@@ -9,3 +9,13 @@ services:
         value: 3.11.9
       - key: ENV
         value: production
+      - key: ENABLE_AI_ANALYSIS
+        value: true
+      - key: GEMINI_MODEL
+        value: gemini-1.5-flash
+      - key: AI_MIN_SCORE_TO_PASS
+        value: 60
+      - key: AI_TIMEOUT_SECONDS
+        value: 20
+      - key: ENABLE_TELEGRAM
+        value: false

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from app.config import APP_NAME, APP_VERSION, BASE_DIR
+from app.config import APP_NAME, APP_VERSION, BASE_DIR, ENABLE_AI_ANALYSIS, GOOGLE_API_KEY, GEMINI_MODEL
 from app.database import init_db
 from app.webhook import router as webhook_router
 from app.dashboard import router as dashboard_router
@@ -26,8 +26,8 @@ def home():
         'status': 'online',
         'service': APP_NAME,
         'version': APP_VERSION,
-        'phase': 'v3.2 AI Signal Engine',
-        'features': ['Webhook', 'SQLite', 'Duplicate Detection', 'Allowed Symbols', 'Risk Manager', 'Scoring Engine', 'Portfolio Engine', 'Dashboard', 'Paper Broker Placeholder', 'AI Signal Engine'],
+        'phase': 'v3.3 Google GenAI SDK',
+        'features': ['Webhook', 'SQLite', 'Duplicate Detection', 'Allowed Symbols', 'Risk Manager', 'Scoring Engine', 'Portfolio Engine', 'Dashboard', 'Paper Broker Placeholder', 'AI Signal Engine', 'Google GenAI SDK'],
         'endpoints': ['/health', '/symbols', '/webhook', '/test-webhook', '/logs', '/stats', '/symbol-status', '/portfolio', '/dashboard', '/signals', '/signals/latest', '/analysis/latest', '/analysis/{id}', '/backtest']
     }
 
@@ -60,3 +60,16 @@ def portfolio():
 @app.get('/backtest')
 def backtest():
     return backtest_summary()
+
+
+@app.get('/debug-ai')
+def debug_ai():
+    key_prefix = GOOGLE_API_KEY[:8] if GOOGLE_API_KEY else ''
+    return {
+        'ai_enabled': ENABLE_AI_ANALYSIS,
+        'google_api_key_exists': bool(GOOGLE_API_KEY),
+        'google_api_key_prefix': key_prefix,
+        'gemini_model': GEMINI_MODEL,
+        'sdk': 'google-genai',
+        'note': 'Only the key prefix is shown for safety.'
+    }
