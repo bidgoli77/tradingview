@@ -9,7 +9,3 @@ services:
         value: 3.11.9
       - key: ENV
         value: production
-      - key: ENABLE_AI_ANALYSIS
-        value: false
-      - key: ENABLE_TELEGRAM
-        value: false
